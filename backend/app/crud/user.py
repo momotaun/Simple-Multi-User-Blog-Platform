@@ -25,3 +25,6 @@ def create_user(db: Session, user: UserCreate):
     except IntegrityError:
         db.rollback()
         raise
+
+def get_users(db: Session):
+    return db.query(User).all()
