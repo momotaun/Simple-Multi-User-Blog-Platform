@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
-from app.api.v1 import hello
+from app.api.v1 import hello, users
 
 app = FastAPI(title=settings.PROJECT_NAME)
 
@@ -13,4 +13,5 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(hello.router, prefix=settings.API_V1_STR)
+app.include_router(hello.router, prefix=f"{settings.API_V1_STR}/hello", tags=["Hello"])
+app.include_router(users.router, prefix=f"{settings.API_V1_STR}/users", tags=["Users"])
