@@ -25,3 +25,13 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
 def list_users(db: Session = Depends(get_db)):
     users = crud_user.get_users(db)
     return users
+
+@router.get("/{user_id}", response_model=UserOut)
+def get_user(user_id: int, db: Session = Depends(get_db)):
+    user = crud_user.get_userById(db, user_id)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found."
+        )
+    return user
