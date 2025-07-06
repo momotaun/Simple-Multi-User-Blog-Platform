@@ -5,6 +5,7 @@ import RegisterForm from "./components/Auth/RegisterForm";
 import PrivateRoute from "./components/Auth/PrivateRoute";
 import PublicOnlyRoute from "./components/Auth/PublicRoute";
 import Home from "./pages/Home";
+import CreatePost from "./pages/CreatePost";
 
 function App() {
   return (
@@ -16,7 +17,7 @@ function App() {
           path="/create-post"
           element={
             <PrivateRoute>
-              <div>Create Post Form Here</div>
+              <CreatePost />
             </PrivateRoute>
           }
         />
