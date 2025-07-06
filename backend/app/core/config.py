@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     BACKEND_CORS_ORIGINS: list = ["*"]
     PROJECT_NAME: str = "Simple Multi User Blog Platform"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    REFRESH_TOKEN_EXPIRE_MINUTES: int = 43200
     SECRET_KEY: str = "your-secret-key"
     ALGORITHM: str = "HS256"
     class Config:
