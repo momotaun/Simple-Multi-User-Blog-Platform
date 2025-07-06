@@ -1,15 +1,25 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Header from "./components/Header";
 import LoginForm from "./components/Auth/LoginForm";
 import RegisterForm from "./components/Auth/RegisterForm";
 import PrivateRoute from "./components/Auth/PrivateRoute";
 import PublicOnlyRoute from "./components/Auth/PublicRoute";
-import Header from "./components/Header";
+import Home from "./pages/Home";
 
-export default function App() {
+function App() {
   return (
     <Router>
       <Header />
       <Routes>
+        <Route path="/" element={<Home />} />
+        <Route
+          path="/create-post"
+          element={
+            <PrivateRoute>
+              <div>Create Post Form Here</div>
+            </PrivateRoute>
+          }
+        />
         <Route
           path="/login"
           element={
@@ -26,15 +36,9 @@ export default function App() {
             </PublicOnlyRoute>
           }
         />
-        <Route
-          path="/"
-          element={
-            <PrivateRoute>
-              <div>Welcome to your protected dashboard!</div>
-            </PrivateRoute>
-          }
-        />
       </Routes>
     </Router>
   );
 }
+
+export default App;

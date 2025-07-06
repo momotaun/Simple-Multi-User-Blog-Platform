@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
+from app.schemas.user import UserOut
 
 class PostBase(BaseModel):
     title: str
@@ -16,6 +17,7 @@ class PostOut(PostBase):
     id: int
     owner_id: int
     publication_date: datetime
+    owner: UserOut
 
     class Config:
         orm_mode = True
