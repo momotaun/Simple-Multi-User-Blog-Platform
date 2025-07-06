@@ -1,14 +1,13 @@
-import os
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
-    API_V1_STR: str = "/api/v1"
-    BACKEND_CORS_ORIGINS: list = ["*"]
     PROJECT_NAME: str = "Simple Multi User Blog Platform"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    API_V1_STR: str = "/api/v1"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 15
     REFRESH_TOKEN_EXPIRE_MINUTES: int = 43200
-    SECRET_KEY: str = "your-secret-key"
+    SECRET_KEY: str = "supersecret"
     ALGORITHM: str = "HS256"
+    BACKEND_CORS_ORIGINS: list = ["*"]
     class Config:
         env_file = ".env"
 

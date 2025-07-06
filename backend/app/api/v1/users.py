@@ -1,20 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from app.models.user import User
-from app.schemas.user import UserCreate, UserOut
-from app.dependencies.auth import get_current_user
+from app.schemas.user import UserCreate, UserOut, PasswordUpdate
 from app.crud import user as crud_user
-from app.db import SessionLocal
-from sqlalchemy.exc import IntegrityError
+from app.dependencies.auth import get_current_user, get_db
+from app.models.user import User
 
 router = APIRouter()
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 @router.post("/", response_model=UserOut, status_code=status.HTTP_201_CREATED)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
@@ -25,8 +16,7 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     
 @router.get("/", response_model=list[UserOut])
 def list_users(db: Session = Depends(get_db)):
-    users = crud_user.get_users(db)
-    return users
+    return crud_user.get_users(db)
 
 @router.get("/{user_id}", response_model=UserOut)
 def get_user(user_id: int, db: Session = Depends(get_db)):
@@ -36,4 +26,15 @@ def get_user(user_id: int, db: Session = Depends(get_db)):
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found."
         )
+    return user
+
+@router.get("/me", response_model=UserOut)
+def read_current_user(current_user: User = Depends(get_current_user)):
+    return current_user
+
+@router.patch("/{user_id}/password", response_model=UserOut)
+def update_password(user_id: int, update: PasswordUpdate, db: Session = Depends(get_db)):
+    user = crud_user.update_user_password(db, user_id, update.password)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
     return user

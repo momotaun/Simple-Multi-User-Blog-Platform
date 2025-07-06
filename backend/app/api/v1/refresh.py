@@ -1,20 +1,13 @@
-from fastapi import APIRouter, HTTPException, Depends, status
+from fastapi import APIRouter, HTTPException, Depends
 from jose import jwt, JWTError
 from sqlalchemy.orm import Session
 from app.core.config import settings
-from app.db import SessionLocal
+from app.core.security import create_access_token, create_refresh_token
 from app.models.user import User
 from app.schemas.user import Token
-from app.core.security import create_access_token
+from app.dependencies.auth import get_db
 
 router = APIRouter()
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 @router.post("/", response_model=Token)
 def refresh_token(refresh_token: str, db: Session = Depends(get_db)):
@@ -30,11 +23,8 @@ def refresh_token(refresh_token: str, db: Session = Depends(get_db)):
     if not user:
         raise HTTPException(status_code=401, detail="User not found")
 
-    new_access_token = create_access_token(data={"sub": str(user.id)})
-    new_refresh_token = create_refresh_token(data={"sub": str(user.id)})
+    new_access = create_access_token({"sub": str(user.id)})
+    new_refresh = create_refresh_token({"sub": str(user.id)})
 
-    return {
-        "access_token": new_access_token,
-        "refresh_token": new_refresh_token,
-        "token_type": "bearer"
-    }
+
+    return {"access_token": new_access, "refresh_token": new_refresh}

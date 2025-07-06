@@ -34,8 +34,15 @@ def get_userById(db: Session, user_id: int):
 
 def authenticate_user(db: Session, email: str, password: str):
     user = get_user_by_email(db, email)
+    if not user or not verify_password(password, user.hashed_password):
+        return None
+    return user
+
+def update_user_password(db: Session, user_id: int, new_password: str):
+    user = get_userById(db, user_id)
     if not user:
         return None
-    if not verify_password(password, user.hashed_password):
-        return None
+    user.hashed_password = hash_password(new_password)
+    db.commit()
+    db.refresh(user)
     return user
