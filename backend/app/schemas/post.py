@@ -9,6 +9,9 @@ class PostBase(BaseModel):
 class PostCreate(PostBase):
     pass
 
+class PostUpdate(PostBase):
+    pass
+
 class PostOut(PostBase):
     id: int
     owner_id: int
