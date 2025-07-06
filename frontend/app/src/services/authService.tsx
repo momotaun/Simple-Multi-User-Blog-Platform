@@ -17,7 +17,7 @@ export const registerUser = async (email: string, password: string) => {
 };
 
 export const loginUser = async (email: string, password: string) => {
-  const res = await fetch(`${API_URL}/login/`, {
+  const res = await fetch(`${API_URL}/token/`, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({ username: email, password }),
