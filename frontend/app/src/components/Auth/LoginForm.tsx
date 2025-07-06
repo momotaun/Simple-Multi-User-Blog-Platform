@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { loginUser } from "../../services/authService";
+import { useAuth } from "../../context/AuthContext";
 
 export default function LoginForm() {
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -9,9 +11,8 @@ export default function LoginForm() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const data = await loginUser(email, password);
-      localStorage.setItem("access_token", data.access_token);
-      localStorage.setItem("refresh_token", data.refresh_token);
+      const { access_token } = await loginUser(email, password);
+      login(access_token);
       setMessage("Login successful");
     } catch (err: any) {
       setMessage(err.message);
@@ -21,8 +22,8 @@ export default function LoginForm() {
   return (
     <form onSubmit={handleLogin}>
       <h2>Login</h2>
-      <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} required />
-      <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required />
+      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" required />
+      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" required />
       <button type="submit">Login</button>
       <p>{message}</p>
     </form>

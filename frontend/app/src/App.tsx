@@ -1,16 +1,39 @@
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import RegisterForm from "./components/Auth/RegisterForm";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginForm from "./components/Auth/LoginForm";
+import RegisterForm from "./components/Auth/RegisterForm";
+import PrivateRoute from "./components/Auth/PrivateRoute";
+import PublicOnlyRoute from "./components/Auth/PublicRoute";
+import Header from "./components/Header";
 
 export default function App() {
   return (
     <Router>
-      <nav>
-        <Link to="/register">Register</Link> | <Link to="/login">Login</Link>
-      </nav>
+      <Header />
       <Routes>
-        <Route path="/register" element={<RegisterForm />} />
-        <Route path="/login" element={<LoginForm />} />
+        <Route
+          path="/login"
+          element={
+            <PublicOnlyRoute>
+              <LoginForm />
+            </PublicOnlyRoute>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <PublicOnlyRoute>
+              <RegisterForm />
+            </PublicOnlyRoute>
+          }
+        />
+        <Route
+          path="/"
+          element={
+            <PrivateRoute>
+              <div>Welcome to your protected dashboard!</div>
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </Router>
   );
