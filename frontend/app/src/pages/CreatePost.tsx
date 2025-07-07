@@ -1,58 +1,51 @@
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { createPost } from "../services/postService";
 
+const schema = yup.object({
+  title: yup.string().required("Title is required").min(3, "Min 3 characters"),
+  content: yup.string().required("Content is required").min(10, "Min 10 characters"),
+});
+
+type FormData = yup.InferType<typeof schema>;
+
 export default function CreatePost() {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [message, setMessage] = useState("");
-  const [errors, setErrors] = useState<{ title?: string; content?: string }>({});
   const navigate = useNavigate();
 
-  const validate = () => {
-    const newErrors: typeof errors = {};
-    if (!title.trim()) newErrors.title = "Title is required.";
-    else if (title.length < 3) newErrors.title = "Title must be at least 3 characters.";
-    if (!content.trim()) newErrors.content = "Content is required.";
-    else if (content.length < 10) newErrors.content = "Content must be at least 10 characters.";
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: yupResolver(schema),
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (data: FormData) => {
     try {
-      await createPost(title, content);
-      setMessage("Post created!");
+      await createPost(data.title, data.content);
       navigate("/");
     } catch (err) {
-      console.error(err);
-      setMessage("Failed to create post.");
+      console.error("Failed to create post", err);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <h2>Create New Post</h2>
-      <input
-        type="text"
-        placeholder="Title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        required
-      />
-      <br />
-      <textarea
-        placeholder="Content"
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        required
-        rows={5}
-        cols={40}
-      />
-      <br />
+
+      <div>
+        <input placeholder="Title" {...register("title")} />
+        {errors.title && <p style={{ color: "red" }}>{errors.title.message}</p>}
+      </div>
+
+      <div>
+        <textarea placeholder="Content" {...register("content")} rows={5} cols={40} />
+        {errors.content && <p style={{ color: "red" }}>{errors.content.message}</p>}
+      </div>
+
       <button type="submit">Submit</button>
-      <p>{message}</p>
     </form>
   );
 }

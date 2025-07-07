@@ -29,7 +29,7 @@ def get_user(user_id: int, db: Session = Depends(get_db)):
     return user
 
 @router.get("/me", response_model=UserOut)
-def read_current_user(current_user: User = Depends(get_current_user)):
+async def read_current_user(current_user: User = Depends(get_current_user)):
     return current_user
 
 @router.patch("/{user_id}/password", response_model=UserOut)
