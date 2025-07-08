@@ -17,7 +17,6 @@ class PostOut(PostBase):
     id: int
     owner_id: int
     publication_date: datetime
-    author_email: str
     owner: UserOut
 
     class Config:
